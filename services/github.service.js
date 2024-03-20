@@ -10,11 +10,11 @@ class Github {
   // TODO refactor
   let responses;
   if (type === STATISTICS_TYPE.year) {
-   response = await this.getTopRepositoriesLastYear({ ownеr, repos });
+   responses = await this.getTopRepositoriesLastYear({ owner, repo });
   } else if (type === STATISTICS_TYPE.all) {
-   response = await this.getTopRepositoriesAll({ owners, repо });
+   responses = await this.getTopRepositoriesAll({ owner, repo });
   }
-  return { data: responses, count: response.length };
+  return { data: responses, count: responses.length };
  }
 
  // recently = ~1year, check documentation Github api
