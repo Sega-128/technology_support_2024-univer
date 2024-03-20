@@ -38,7 +38,7 @@ const devConfig = {
  },
  customLogLevel,
  customSuccessMessage(req, res) {
-  if (res.statusCode == 404) {
+  if (res.statusCode === 404) {
    return 'resource not found';
   }
   return `${req.method} completed`;
@@ -54,7 +54,7 @@ const devConfig = {
 const getFilePath = () => {
  const directoryPath = './logs';
  const dateLog = new Date().toISOString().slice(0, 10);
- const filePath = path.join(directoryPath, 'log-file-${dateLog}.log');
+ const filePath = path.join(directoryPath, `log-file-${dateLog}.log`);
  return filePath;
 };
 
