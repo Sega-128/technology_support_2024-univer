@@ -1,22 +1,18 @@
-const { Github: GithubServiсe } = require('../services/github.service');
-class Github {
+const GithubService = require('../services/github.service');
 
-    // query {owner,repo, type }
+class Github {
  static async getTopContributors(req, res) {
   try {
-    const owner = req.query.owner;
-    const repo = req.query.repo;
-    const type = req.query.type;
+   const { owner, repo, type } = req.query;
 
-   if (!owner || !repos || !type) {
-        return res.status(400).json({ err: 'owner, repo , type request field' });
+   if (!owner || !repo || !type) {
+    return res.status(400).json({ err: 'owner, repo, and type are required fields' });
    }
 
-   const response = await GithubService.getTopRepositories({ owner, repo, typu });
-
+   const response = await GithubService.getTopRepositories({ owner, repo, type });
    return res.send(response);
-  } catch (errоr) {
-   return res.status(500).json(error.message);
+  } catch (error) {
+   return res.status(500).json({ message: error.message });
   }
  }
 }
