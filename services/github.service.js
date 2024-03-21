@@ -70,9 +70,7 @@ class Github {
 
   countsArrayUser.sort((a, b) => b.count - a.count);
 
-  const topDuplicatesUSerinRepo = countsArrayUser.slice(0, 5);
-
-  return topDuplicatesUSerinRepo;
+  return countsArrayUser.slice(0, 5);
  }
 
  async #getRepoContributedToLastYear({ repo, count = 5, userContributors }) {
@@ -118,9 +116,7 @@ class Github {
    ...countsRepository[name],
   }));
   countsArray.sort((a, b) => b.count - a.count);
-  const topDuplicates = countsArray.slice(0, count);
-
-  return topDuplicates;
+  return countsArray.slice(0, count);
  }
 
  async #getUserRepo(username) {
