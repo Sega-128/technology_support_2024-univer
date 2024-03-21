@@ -1,13 +1,11 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const Fastq = require('fastq');
-const { Github: GithubАdapter } = require('../adapter/github.adapter');
+const GithubAdapter = require('../adapter/github.adapter');
 
-// TODO refactor add constants
 const STATISTICS_TYPE = { year: 'year', all: 'all' };
 
 class Github {
  async getTopRepositories({ repo, owner, type }) {
-  // TODO refactor
   let responses;
   if (type === STATISTICS_TYPE.year) {
    responses = await this.getTopRepositoriesLastYear({ owner, repo });
@@ -17,17 +15,16 @@ class Github {
   return { data: responses, count: responses.length };
  }
 
- // recently = ~1year, check documentation Github api
- async getTopRepositoriesLastYear({ repo, owner }) {
-  const userContributors = await this.#getUserContributors({ repo, owner });
-  return this.#getRepoContributedToLastYear({ repo, owner, userContributors });
+ async getTopRepositoriesLastYear({ repo, queryOwner }) {
+  const userContributors = await this.#getUserContributors({ repo, owner: queryOwner });
+  return this.#getRepoContributedToLastYear({ repo, owner: queryOwner, userContributors });
  }
 
- async getTopRepositoriesAll({ repo, owner }) {
-  const contributors = await this.#getUserContributors({ repo, owner });
+ async getTopRepositoriesAll({ repo, queryOwner }) {
+  const contributors = await this.#getUserContributors({ repo, owner: queryOwner });
   const topDuplicates = await this.#getRepoContributedToLastYear({
    repo,
-   owner,
+   owner: queryOwner,
    count: 20,
    userContributors: contributors,
   });
@@ -88,12 +85,11 @@ class Github {
 
     const owner = url.pathname.split('/')[1];
     const repositoryName = url.pathname.split('/')[2];
-    // TODO refactor
     if (repositoryName !== repo) {
      const fullName = `${owner}_${repositoryName}`;
 
      if (countsRepository[fullName]) {
-      countsRepository[fullName].count++;
+      countsRepository[fullName].count += 1;
      } else {
       countsRepository[fullName] = {
        count: 1,
@@ -129,7 +125,7 @@ class Github {
 
  async #getUserRepo(username) {
   try {
-   let querys = `
+   const query = `
       {
         user(login: "${username}") {
           repositoriesContributedTo(first: 99) {
@@ -148,8 +144,8 @@ class Github {
    throw new Error(`Failed to fetch repositories for ${username}: ${error.message}`);
   }
  }
+
  async #getUserContributors({ repo, owner }) {
-  let page = 1;
   const contributors = [];
 
   while (true) {
@@ -157,7 +153,7 @@ class Github {
    const data = await GithubAdapter.getContributors({ page, repo, owner, type: 'all' });
    contributors.push(...data);
    if (data.length === 0 || data.length < 100) break;
-   page++;
+   page += 1;
   }
 
   return contributors.filter((_user) => {
