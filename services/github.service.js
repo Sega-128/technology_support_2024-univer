@@ -20,8 +20,9 @@ class Github {
  // recently = ~1year, check documentation Github api
  async getTopRepositoriesLastYear({ repo, owner }) {
   const userContributors = await this.#getUserContributors({ repo, owner });
-  return this.getRepoContributedToLastYear({ repo, owner, userContributors });
+  return this.#getRepoContributedToLastYear({ repo, owner, userContributors });
  }
+
  async getTopRepositoriesAll({ repo, owner }) {
   const contributors = await this.#getUserContributors({ repo, owner });
   const topDuplicates = await this.#getRepoContributedToLastYear({
@@ -76,6 +77,7 @@ class Github {
 
   return topDuplicatesUSerinRepo;
  }
+
  async #getRepoContributedToLastYear({ repo, count = 5, userContributors }) {
   const countsRepository = {};
   const queueGetuserRepo = Fastq.promise(async (task) => {
@@ -87,7 +89,7 @@ class Github {
     const owner = url.pathname.split('/')[1];
     const repositoryName = url.pathname.split('/')[2];
     // TODO refactor
-    if (repositoryName != repo) {
+    if (repositoryName !== repo) {
      const fullName = `${owner}_${repositoryName}`;
 
      if (countsRepository[fullName]) {
@@ -124,11 +126,12 @@ class Github {
 
   return topDuplicates;
  }
+
  async #getUserRepo(username) {
   try {
    let querys = `
       {
-        user(login: "${usernam}") {
+        user(login: "${username}") {
           repositoriesContributedTo(first: 99) {
             nodes {
               name
