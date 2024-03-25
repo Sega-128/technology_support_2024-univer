@@ -3,7 +3,7 @@ name: Linter
 on:
   push:
     branches:
-      - modul_1_Lytvak
+      - modul_1_1_Lytvak
 
 jobs:
   lint:
